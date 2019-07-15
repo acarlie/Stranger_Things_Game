@@ -1,23 +1,36 @@
 $( document ).ready(function() {
     var game = {
-        players: {
-            eleven: {hawkins: true, hp: 100, attack: 100, counterAttack: 100, basePower: 100},
-            hopper: {hawkins: true, hp: 100, attack: 100, counterAttack: 100, basePower: 100},
-            jancy: {hawkins: true, hp: 100, attack: 100, counterAttack: 100, basePower: 100},
-            mindFlayer: {hawkins: false, hp: 100, attack: 100, counterAttack: 100, basePower: 100},
-            demoDog: {hawkins: false, hp: 100, attack: 100, counterAttack: 100, basePower: 100},
-            billie: {hawkins: false, hp: 100, attack: 100, counterAttack: 100, basePower: 100}
-        },
+        players: [
+            {name: "Eleven", desc: "", hawkins: true, hp: 100, attack: 100, counterAttack: 100, basePower: 100},
+            {name: "Jim Hopper", desc: "", hawkins: true, hp: 100, attack: 100, counterAttack: 100, basePower: 100},
+            {name: "Jancy", desc: "", hawkins: true, hp: 100, attack: 100, counterAttack: 100, basePower: 100},
+            {name: "The Mind Flayer", desc: "", hawkins: false, hp: 100, attack: 100, counterAttack: 100, basePower: 100},
+            {name: "Demogorgon", desc: "", hawkins: false, hp: 100, attack: 100, counterAttack: 100, basePower: 100},
+            {name: "Billy", desc: "", hawkins: false, hp: 100, attack: 100, counterAttack: 100, basePower: 100}
+        ],
     }
 
 
 
 
-    $(".text-stranger").each(function(){
+    $('.text-stranger').each(function(){
         $(this).attr('data-content', this.textContent);
     });
 
-    window.setTimeout(function(){ $("#loader").addClass("hidden"); }, 1000);
+
+    $.each(game.players, function(i){
+
+        var character = $('<div>').addClass('player').text(game.players[i].name);
+
+        if(game.players[i].hawkins){
+            $('#hawkins').append(character);
+        }else{
+            $('#upside-down').append(character);
+        }
+        
+    });
+
+    window.setTimeout(function(){ $('#loader').addClass('hidden'); }, 1000);
     
 
 

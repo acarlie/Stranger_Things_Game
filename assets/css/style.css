@@ -7,20 +7,13 @@
 :root{
     --color-dark: #222;
     --color-red: #F24F48;
-    --color-light:;
+    --color-light: #fff;
     --shadow-red: 0 0 11px RGBA(232,7,19,.75);
 }
 
 body{
 
 }
-
-    /* <div id="loader" class="cont-fixed cont-fullheight color-dark">
-        <h1 class="text-load text-stranger">Stranger Things</h1>
-    </div>
-    <div id="container">
-        <h1>Choose your</h1>
-    </div> */
 
 #loader{
     transition: all 2s ease;
@@ -32,8 +25,7 @@ body{
 }
 
 h1, h2, h3, h4, h5, h6{
-    font-family: 'ITC Benguiat', serif;
-    
+    font-family: 'ITC Benguiat', serif;   
 }    
 
 h1{
@@ -45,7 +37,7 @@ h1{
 }
 
 .text-load{
-
+    line-height: 100vh;
 }
 
 .text-stranger{
@@ -67,50 +59,15 @@ h1{
     z-index: -1;
 }
 
-
-
-
-/* h1{
-    display: inline-block;
-    line-height: 1em;
-    padding: 0;
-    margin: 0;
-    font-weight: 600;
-    font-family: 'ITC Benguiat', serif;
-    font-size: 7em;
-    position: relative;
-    text-align: center;
-    text-transform: uppercase;
-    color: #000;
-  
-    text-shadow: 0 0 11px RGBA(232,7,19,.75);
-  
-  }
-  
-  h1::after{
-  
-    position: absolute;
-    left: 0;
-    top: 0;
-   content: 'STRANGER THINGS';
-   z-index: -2;
-       -moz-text-stroke-color: #F24F48;
-    -webkit-text-stroke-color: #F24F48;
-       -moz-text-stroke-width: 4px;  
-    -webkit-text-stroke-width: 4px;
-    
-  } */
-
 .cont-fixed{
     top:0;
     left:0;
     position: fixed;
-    width: 100%;
+    width: 100vw;
     height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     overflow: hidden;
 }
 
@@ -119,5 +76,6 @@ h1{
 }
 
 .color-dark{
+    color: var(--color-light);
     background-color: var(--color-dark);
 }
