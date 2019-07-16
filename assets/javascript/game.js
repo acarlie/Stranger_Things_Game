@@ -20,7 +20,7 @@ $( document ).ready(function() {
 
     $.each(game.players, function(i){
 
-        var character = $('<div>').addClass('player').text(game.players[i].name);
+        var character = $('<div>').addClass('player').text(game.players[i].name).attr('data-select', 'false');
 
         if(game.players[i].hawkins){
             $('#hawkins').append(character);
@@ -28,6 +28,12 @@ $( document ).ready(function() {
             $('#upside-down').append(character);
         }
         
+    });
+
+    $('.player').on("click", function(){
+        $('.player').attr('data-select', 'false');
+        $(this).attr('data-select', 'true'); //use .data() to retrieve later
+        console.log('clicked' + this);
     });
 
     window.setTimeout(function(){ $('#loader').addClass('hidden'); }, 1000);
