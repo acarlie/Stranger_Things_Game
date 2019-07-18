@@ -3,37 +3,37 @@ $( document ).ready(function() {
         gamePlay: false,
         character: "",
         characterSide: "",
+        enemySelect: false,
         enemies: [],
         enemyCount: 0,
         defeatedEnemies: 0,
         currentEnemy: "",
+        enemyNum: "",
         players: [
-            {num: 1, hawkins: true, hp: 60, attack: 50, defense: 25, counterAttack: 100, basePower: 100, name: "Eleven", desc: ""},
-            {num: 2, hawkins: true, hp: 80, attack: 25, defense: 20, counterAttack: 100, basePower: 100, name: "Jim Hopper", desc: ""},
-            {num: 3, hawkins: true, hp: 80, attack: 30, defense: 15, counterAttack: 100, basePower: 100, name: "Jancy", desc: "A.K.A. Jonathan Buyers and Nancy Wheeler"},
-            {num: 4, hawkins: false, hp: 100, attack: 40, defense: 15, counterAttack: 100, basePower: 100, name: "The Mind Flayer", desc: ""},
-            {num: 5, hawkins: false, hp: 90, attack: 35, defense: 15, counterAttack: 100, basePower: 100, name: "Demogorgon", desc: ""},
-            {num: 6, hawkins: false, hp: 60, attack: 35, defense: 10, counterAttack: 100, basePower: 100, name: "Billy", desc: ""}
+            {num: 0, hawkins: true, hp: 80, attack: 50, defense: 25, counterAttack: 40, basePower: 10, name: "Eleven", desc: ""},
+            {num: 1, hawkins: true, hp: 120, attack: 25, defense: 20, counterAttack: 30, basePower: 5, name: "Jim Hopper", desc: ""},
+            {num: 2, hawkins: true, hp: 120, attack: 30, defense: 15, counterAttack: 30, basePower: 6, name: "Jancy", desc: "A.K.A. Jonathan Buyers and Nancy Wheeler"},
+            {num: 3, hawkins: false, hp: 150, attack: 40, defense: 15, counterAttack: 40, basePower: 9, name: "The Mind Flayer", desc: ""},
+            {num: 4, hawkins: false, hp: 110, attack: 35, defense: 15, counterAttack: 35, basePower: 7, name: "Demogorgon", desc: ""},
+            {num: 5, hawkins: false, hp: 100, attack: 35, defense: 10, counterAttack: 35, basePower: 5, name: "Billy", desc: ""}
         ],
         isAlive(player){
             //returns if player is alive.
             return Boolean(player.hp > 0);
         },
+        attack(p1, p2){
+            p2.hp = Math.max(0, p2.hp - Math.max(0, p1.attack - p2.defense));
+            p1.attack += p1.basePower;
+        },
+        counterAttack(p1, p2){
+            p1.hp = Math.max(0, p1.hp - Math.max(0, p2.counterAttack - p1.defense));
+        },
         duel(player1, player2){
-            // That is, Player 1 attacks Player 2. Then Player 2 attacks Player 1
-            // A Player's damage is defined as their "attack" value minus their opponent's "defense" value. 
-            // The damage is then subtracted from the defender's health value.
-            // While players are alive continue duel.
-            // Is alive boolean checks if player is alive
-
-            //Math.max can be used to prevent negative numbers - Math.max(0, possible damage);
-            // if(this.isAlive(player1) && this.isAlive(player2))
+      
             if (this.isAlive(player1) && this.isAlive(player2)){
-                player1.hp = Math.max(0, player1.hp - Math.max(0, player2.attack - player1.defense));
-                player2.hp = Math.max(0, player2.hp - Math.max(0, player1.attack - player2.defense));
 
-                // console.log(player1.name + player1.hp);
-                // console.log(player2.name + player2.hp);
+                this.attack(player1, player2);
+                this.counterAttack(player1, player2);
 
                 var p1 = player1.num;
                 var p2 = player2.num;
@@ -43,17 +43,15 @@ $( document ).ready(function() {
 
                 if(this.isAlive(player1) && !this.isAlive(player2)){
                     console.log(player1.name + ' won');
+                    this.chooseEnemy();
                 } else if (this.isAlive(player2) && !this.isAlive(player1)){
                     console.log(player2.name + ' won');
+                    //Game over - restart
                 } else if (!this.isAlive(player1) && !this.isAlive(player2)){
                     console.log('draw');
                 }
 
-            } 
-
-         
-      
-                
+            }    
                 
         },
         appendEl(obj, element){
@@ -68,12 +66,31 @@ $( document ).ready(function() {
             var hp = $('<p>').text(obj.hp).attr('id', 'hp' + obj.num);
             card.append(hp);
 
-            if(obj === this.character){
-                var button = $('<button>').addClass('btn btn-attack').attr('id', 'attack').text('Attack');
+            if(obj !== this.character){
+                var button = $('<button>').addClass('btn btn-attack').attr('id', 'attack' + obj.num).text('Attack');
                 card.append(button);
-            }
+            } 
             
             return card;
+        },
+        chooseEnemy(num){
+            // var random = Math.floor(Math.random()*this.enemies.length);
+
+            // this.currentEnemy = this.enemies[random];
+            this.enemies.splice(num, 1);
+            this.currentEnemy = this.players[num];
+            
+
+            // if(this.currentEnemy.hawkins){
+            //     $('#hawkins').empty();
+            // } else {
+            //     $('#upside-down').empty();
+            // }
+
+            // var enemy = this.characterCard(this.currentEnemy);
+            // this.appendEl(this.currentEnemy, enemy);
+
+        
         },
         init(index){
             this.gamePlay = true;
@@ -87,17 +104,20 @@ $( document ).ready(function() {
                 }
             });
 
-            var random = Math.floor(Math.random()*this.enemies.length);
+            // if (this.characterSide){
+            //     $('#hawkins').empty();
+            // } else {
+            //     $('#upside-down').empty();
+            // }
+            
+            $('#hawkins, #upside-down').empty();
 
-            this.currentEnemy = this.enemies[random];
-            this.enemies.splice(random, 1);
-
-            $('#upside-down, #hawkins').empty();
-
+            this.enemies.forEach(function(i){
+                var char = game.characterCard(i);
+                game.appendEl(i, char);
+            });
+            
             var attacker = this.characterCard(this.character);
-            var enemy = this.characterCard(this.currentEnemy);
-
-            this.appendEl(this.currentEnemy, enemy);
             this.appendEl(this.character, attacker);
     
         },
@@ -148,8 +168,26 @@ $( document ).ready(function() {
     $( '.player-select' ).on('click', playerSelectHandler ).find( "span, button" ).hide();
 
     //attack button
-    $('#container').on('click', '#attack', function(){
-        game.duel(game.character, game.currentEnemy);
+    $('#container').on('click', '.btn-attack', function(event){
+        var target = event.target;
+        var targetId = $(target).attr('id');
+        var targetNum = targetId[targetId.length - 1];
+
+        if (!game.enemySelect){
+            console.log('enemy selected')
+            game.enemyNum = targetId[targetId.length - 1];
+            game.chooseEnemy(game.enemyNum);
+            game.enemySelect = true;
+
+        } else if (game.enemySelect && game.enemyNum === targetNum){
+            console.log('game.enemyNum' + game.enemyNum);
+            console.log('targetNum' + targetNum);
+            game.duel(game.character, game.currentEnemy);
+        }
+  
+        
+
+ 
     });
 
 
