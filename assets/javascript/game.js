@@ -22,6 +22,18 @@ $( document ).ready(function() {
                 $('#upside-down').append(element);
             }
         },
+        characterCard(obj){
+            var card = $('<div>').text(obj.name).addClass('player');
+            var hp = $('<p>').text(obj.hp);
+            card.append(hp);
+
+            if(obj === this.character){
+                var button = $('<button>').addClass('btn btn-select').text('Attack');
+                card.append(button);
+            }
+            
+            return card;
+        },
         init(index){
             this.gamePlay = true;
             this.character = this.players[index];
@@ -41,8 +53,8 @@ $( document ).ready(function() {
 
             $('#upside-down, #hawkins').empty();
 
-            var attacker = $('<div>').text(this.character.name);
-            var enemy = $('<div>').text(this.currentEnemy.name);
+            var attacker = this.characterCard(this.character);
+            var enemy = this.characterCard(this.currentEnemy);
 
             this.appendEl(this.currentEnemy, enemy);
             this.appendEl(this.character, attacker);
@@ -70,7 +82,7 @@ $( document ).ready(function() {
     });
 
     //click event handler for player cards
-    function handler( event ){
+    function playerHandler( event ){
         var target = $( event.target );
             if ( target.is( '.player' ) && !game.gamePlay ) {
 
@@ -91,7 +103,7 @@ $( document ).ready(function() {
     }
 
     //calls click event
-    $( ".player" ).click( handler ).find( "span, button" ).hide();
+    $( ".player" ).click( playerHandler ).find( "span, button" ).hide();
 
 
 });
