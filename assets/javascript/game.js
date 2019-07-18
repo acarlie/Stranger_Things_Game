@@ -23,12 +23,12 @@ $( document ).ready(function() {
             }
         },
         characterCard(obj){
-            var card = $('<div>').text(obj.name).addClass('player');
+            var card = $('<div>').text(obj.name).addClass('player-game');
             var hp = $('<p>').text(obj.hp);
             card.append(hp);
 
             if(obj === this.character){
-                var button = $('<button>').addClass('btn btn-select').text('Attack');
+                var button = $('<button>').addClass('btn btn-attack').attr('id', 'attack').text('Attack');
                 card.append(button);
             }
             
@@ -73,7 +73,7 @@ $( document ).ready(function() {
     //generator for player cards
     $.each(game.players, function(i){
 
-        var character = $('<div>').addClass('player').text(game.players[i].name).attr('data-select', 'false').attr('data-index', i).attr('data-num', game.players[i].num).attr('data-hawkins', game.players[i].hawkins);
+        var character = $('<div>').addClass('player player-select').text(game.players[i].name).attr('data-index', i);
         var selectButton = $('<button>').addClass('btn btn-select').text('Select');
         character.append(selectButton);
 
@@ -81,29 +81,53 @@ $( document ).ready(function() {
         
     });
 
-    //click event handler for player cards
-    function playerHandler( event ){
+    //click event handler for player select cards
+    function playerSelectHandler( event ){
         var target = $( event.target );
-            if ( target.is( '.player' ) && !game.gamePlay ) {
+            if ( target.is( '.player-select' ) && !game.gamePlay ) {
 
-                $('.player').children().hide();
-                $('.player').removeClass('player-chosen');
+                $('.player-select').children().hide();
+                $('.player-select').removeClass('player-chosen');
 
                 target.children().toggle();
                 target.toggleClass('player-chosen');
 
-            } else if ( target.is( 'button' ) && !game.gamePlay ){
+            } else if ( target.is( '.btn-select' ) && !game.gamePlay ){
 
                 var playerIndex = $(this).attr('data-index');
                 game.init(playerIndex);
-
-            }
-
+                
+                // $( '.player-select' ).off('click');
+                
+            } 
+            
           console.log(event.target);
     }
 
-    //calls click event
-    $( ".player" ).click( playerHandler ).find( "span, button" ).hide();
+    // function playerAttackHandler( event ){
+    //     var target = $( event.target );
+    //     if ( target.is( '#attack' ) && game.gamePlay ) {
+    //         console.log('Attack!');
+    //     }
+
+    //     console.log( event.target );
+    // }
+
+    //player select button
+    $( '.player-select' ).on('click', playerSelectHandler ).find( "span, button" ).hide();
+
+    // //attack button
+    // $( '.btn-attack' ).on('click', function(){
+    
+    // });
 
 
+    // $( '.player-game' ).click( playerAttackHandler );
+    $('#hawkins, #upside-down').on('click', '#attack', function(){
+        
+        console.log('attack');
+    });
+
+
+   
 });
