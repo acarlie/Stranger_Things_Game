@@ -5,17 +5,18 @@ $( document ).ready(function() {
         characterSide: "",
         enemySelect: false,
         enemies: [],
+        defeatedEnemiesArr: [],
         enemyCount: 0,
         defeatedEnemies: 0,
         currentEnemy: "",
         enemyNum: "",
         players: [
-            {num: 0, hawkins: true, hp: 80, attack: 50, defense: 25, counterAttack: 40, basePower: 10, name: "Eleven", desc: ""},
-            {num: 1, hawkins: true, hp: 120, attack: 25, defense: 20, counterAttack: 30, basePower: 5, name: "Jim Hopper", desc: ""},
-            {num: 2, hawkins: true, hp: 120, attack: 30, defense: 15, counterAttack: 30, basePower: 6, name: "Jancy", desc: "A.K.A. Jonathan Buyers and Nancy Wheeler"},
-            {num: 3, hawkins: false, hp: 150, attack: 40, defense: 15, counterAttack: 40, basePower: 9, name: "The Mind Flayer", desc: ""},
-            {num: 4, hawkins: false, hp: 110, attack: 35, defense: 15, counterAttack: 35, basePower: 7, name: "Demogorgon", desc: ""},
-            {num: 5, hawkins: false, hp: 100, attack: 35, defense: 10, counterAttack: 35, basePower: 5, name: "Billy", desc: ""}
+            {num: 0, hawkins: true, hp: 80, attack: 50, defense: 25, counterAttack: 40, basePower: 10, name: "Eleven", img: "eleven", desc: ""},
+            {num: 1, hawkins: true, hp: 120, attack: 25, defense: 20, counterAttack: 30, basePower: 5, name: "Jim Hopper", img: "hopper", desc: ""},
+            {num: 2, hawkins: true, hp: 120, attack: 30, defense: 15, counterAttack: 30, basePower: 6, name: "Jancy", img: "jancy", desc: "A.K.A. Jonathan Byers and Nancy Wheeler"},
+            {num: 3, hawkins: false, hp: 150, attack: 40, defense: 15, counterAttack: 40, basePower: 9, name: "The Mind Flayer", img: "mindflayer", desc: ""},
+            {num: 4, hawkins: false, hp: 110, attack: 35, defense: 15, counterAttack: 35, basePower: 7, name: "Demogorgon", img: "demogorgon", desc: ""},
+            {num: 5, hawkins: false, hp: 100, attack: 35, defense: 10, counterAttack: 35, basePower: 5, name: "Billy", img: "billy", desc: ""}
         ],
         isAlive(player){
             //returns if player is alive.
@@ -27,6 +28,12 @@ $( document ).ready(function() {
         },
         counterAttack(p1, p2){
             p1.hp = Math.max(0, p1.hp - Math.max(0, p2.counterAttack - p1.defense));
+        },
+        enemyDefeated(enemyNum){
+            $('#' + enemyNum).addClass('defeated');
+            $('#hp' + enemyNum).text('defeated');
+            $('#attack' + enemyNum).remove();
+            this.enemySelect = false;
         },
         duel(player1, player2){
       
@@ -43,7 +50,9 @@ $( document ).ready(function() {
 
                 if(this.isAlive(player1) && !this.isAlive(player2)){
                     console.log(player1.name + ' won');
-                    this.chooseEnemy();
+                    //empty change defeated enemy
+                    this.enemyDefeated(p2);
+                    
                 } else if (this.isAlive(player2) && !this.isAlive(player1)){
                     console.log(player2.name + ' won');
                     //Game over - restart
@@ -61,8 +70,32 @@ $( document ).ready(function() {
                 $('#upside-down').append(element);
             }
         },
+        polaroid(i){
+            var polaroid = $('<div>').addClass('player player-select player-polaroid').attr('data-index', i);
+            
+            var front = $('<div>').addClass('polaroid-front');
+            var imgWrap = $('<div>').addClass('img-polaroid-wrap');
+            var img = $('<img>').addClass('img-fluid img-polaroid').attr('src', 'assets/images/' + game.players[i].img + '.jpg');
+
+            var back = $('<div>').addClass('polaroid-back');
+            var stats = $('<ul>').html('<li>' + game.players[i].name + '</li><li>' + game.players[i].desc + '</li><li>' + game.players[i].hp + '</li>');
+            var selectButton = $('<button>').addClass('btn btn-select').text('Select');
+
+        
+
+            polaroid.append(front);
+            polaroid.append(back);
+
+            imgWrap.append(img);
+            front.append(imgWrap);
+
+            back.append(stats);
+            back.append(selectButton);
+
+            $('#container').append(polaroid);
+        },
         characterCard(obj){
-            var card = $('<div>').text(obj.name).addClass('player player-game').attr('data-num', obj.num);
+            var card = $('<div>').text(obj.name).addClass('player player-game').attr('id', obj.num);
             var hp = $('<p>').text(obj.hp).attr('id', 'hp' + obj.num);
             card.append(hp);
 
@@ -134,12 +167,8 @@ $( document ).ready(function() {
     //generator for player cards
     $.each(game.players, function(i){
 
-        var character = $('<div>').addClass('player player-select').text(game.players[i].name).attr('data-index', i);
-        var selectButton = $('<button>').addClass('btn btn-select').text('Select');
-        character.append(selectButton);
-
-        game.appendEl(game.players[i], character);
-        
+        game.polaroid(i);
+       
     });
 
     //click event handler for player select cards
@@ -165,7 +194,7 @@ $( document ).ready(function() {
 
 
     //player select button
-    $( '.player-select' ).on('click', playerSelectHandler ).find( "span, button" ).hide();
+    $( '.player-select' ).on('click', playerSelectHandler );
 
     //attack button
     $('#container').on('click', '.btn-attack', function(event){
@@ -174,24 +203,15 @@ $( document ).ready(function() {
         var targetNum = targetId[targetId.length - 1];
 
         if (!game.enemySelect){
-            console.log('enemy selected')
+
             game.enemyNum = targetId[targetId.length - 1];
             game.chooseEnemy(game.enemyNum);
             game.enemySelect = true;
 
         } else if (game.enemySelect && game.enemyNum === targetNum){
-            console.log('game.enemyNum' + game.enemyNum);
-            console.log('targetNum' + targetNum);
             game.duel(game.character, game.currentEnemy);
         }
-  
-        
-
  
     });
-
-
-
-
-   
+ 
 });

@@ -15,6 +15,10 @@
     --shadow-red: 0 0 11px RGBA(232,7,19,.75);
 }
 
+*{
+    box-sizing: border-box;
+}
+
 body{
     font-family: 'ITC Avante Garde Gothic', sans-serif;
 }
@@ -86,8 +90,10 @@ h1{
 }
 
 #container{
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     width: 100%;
+    min-height: 100vh;
 }
 
 #container div{
@@ -95,11 +101,7 @@ h1{
 }
 
 .player{
-    padding: 1em;
-    margin: 1em;
-    border: 1px solid var(--color-red);
     cursor: pointer;
-    position: relative;
 }
 
 .player-chosen{
@@ -139,4 +141,93 @@ button:focus{
     top: 0;
     right: 0;
     padding: 1em;
+}
+
+
+.player-polaroid{
+    margin: 1em;
+    position: relative;
+    height: auto;
+  
+    /* background-image: url("../images/polaroid.png"); */
+    /* -webkit-transform: rotateY( 180deg );
+    transform: rotateY( 180deg ); */
+
+}
+
+
+
+.polaroid-front, .polaroid-back{
+    border-radius: 5px;
+    padding: 1em;
+    box-shadow: 1px 3px 3px rgba(50,25,0,.25), inset 2px 2px 0px rgba(255,255,255, .5), 1px 1px 2px rgba(50,25,0,.25);
+    background-color: #faefdf;
+    /* position: absolute;
+    top: 0;
+    left:0; */
+    height: 100%;
+    -webkit-transition: -webkit-transform 1s;
+    transition: transform 1s;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+
+}
+
+.polaroid-front{
+    padding-bottom: 2em;
+
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+
+.player-polaroid:hover .polaroid-front{
+    -webkit-transform: rotateY( 180deg );
+    transform: rotateY( 180deg );
+}
+
+.player-polaroid:hover .polaroid-back{
+    -webkit-transform: rotateY( 0deg );
+    transform: rotateY( 0deg );
+}
+
+.polaroid-back{
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left:0;
+    -webkit-transform: rotateY( 180deg );
+    transform: rotateY( 180deg );
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+#container{
+    background-image: url('../images/desk.jpg');
+    height: 100vh;
+    background-size: cover;
+}
+
+.img-polaroid-wrap{
+    position: relative;
+    border-radius: 5px;
+}
+
+.img-polaroid{
+    border-radius: 5px;
+    width: 100%;
+}
+
+.img-polaroid-wrap::after{
+    border-radius: 5px;
+    border-right: 1.5px solid rgba(255,255,255, .75);
+    border-bottom:  1.5px solid rgba(255,255,255, .75);
+    box-shadow: inset 1px 2px 2px rgba(0,0,0,.25);
+    content: '';
+    display: block;
+    height: 99%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
 }
