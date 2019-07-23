@@ -78,10 +78,8 @@ $( document ).ready(function() {
             var img = $('<img>').addClass('img-fluid img-polaroid').attr('src', 'assets/images/' + game.players[i].img + '.jpg');
 
             var back = $('<div>').addClass('polaroid-back');
-            var stats = $('<ul>').html('<li>' + game.players[i].name + '</li><li>' + game.players[i].desc + '</li><li>' + game.players[i].hp + '</li>');
+            var stats = $('<ul>').html('<li><strong>' + game.players[i].name + '</strong></li><li>' + game.players[i].desc + '</li><li>HP: ' + game.players[i].hp + '</li>');
             var selectButton = $('<button>').addClass('btn btn-select').text('Select');
-
-        
 
             polaroid.append(front);
             polaroid.append(back);
@@ -89,8 +87,7 @@ $( document ).ready(function() {
             imgWrap.append(img);
             front.append(imgWrap);
 
-            back.append(stats);
-            back.append(selectButton);
+            back.append(stats, selectButton);
 
             $('#container').append(polaroid);
         },
@@ -143,7 +140,7 @@ $( document ).ready(function() {
             //     $('#upside-down').empty();
             // }
             
-            $('#hawkins, #upside-down').empty();
+            $('#container').empty();
 
             this.enemies.forEach(function(i){
                 var char = game.characterCard(i);
@@ -174,17 +171,11 @@ $( document ).ready(function() {
     //click event handler for player select cards
     function playerSelectHandler( event ){
         var target = $( event.target );
-            if ( target.is( '.player-select' ) && !game.gamePlay ) {
-
-                $('.player-select').children().hide();
-                $('.player-select').removeClass('player-chosen');
-
-                target.children().toggle();
-                target.toggleClass('player-chosen');
-
-            } else if ( target.is( '.btn-select' ) && !game.gamePlay ){
+            if ( target.is( '.btn-select' ) && !game.gamePlay ){
+                console.log('clicked');
 
                 var playerIndex = $(this).attr('data-index');
+                console.log(playerIndex);
                 game.init(playerIndex);
                                 
             } 
