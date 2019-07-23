@@ -83,25 +83,35 @@ strong{
     overflow: hidden;
 }
 
-.cont-fullheight{
-
-}
-
 .color-dark{
     color: var(--color-light);
     background-color: var(--color-dark);
 }
 
 #container{
+    width: 100%;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    width: 100%;
+    grid-column-gap: 1em;
     min-height: 100vh;
+    align-items: center;
+    justify-content: space-evenly;
+    justify-items: center;	
+    
 }
 
-#container div{
-    flex-grow: 1;
+.wrapper{
+    width: 70%;
+    display: block;
+    margin: 0 auto;
 }
+
+body{
+    background-image: url('../images/wood2.jpg');
+    background-repeat: repeat;
+    transition: background-image 1s ease;    
+}
+
 
 .player{
     cursor: pointer;
@@ -213,11 +223,7 @@ button:focus{
     backface-visibility: hidden;
 }
 
-#container{
-    background-image: url('../images/desk.jpg');
-    height: 100vh;
-    background-size: cover;
-}
+
 
 .img-polaroid-wrap{
     position: relative;
@@ -226,6 +232,9 @@ button:focus{
 
 .img-polaroid{
     border-radius: 5px;
+}
+
+.img-fluid{
     width: 100%;
 }
 
@@ -242,3 +251,52 @@ button:focus{
     left: 0;
     width: 100%;
 }
+
+.player-game{
+    box-sizing: content-box;
+    border: 3px solid var(--color-red);
+    background-color: var(--color-red);
+    color:white;
+    text-align: center;
+    position: relative;
+    border-radius: 50%;
+    transition: width .25s ease, border .5s ease;
+    width: 75%;
+    overflow: hidden;
+}
+
+.circle-card-stats{
+    position: absolute;
+    top: 0;
+    background-color: var(--color-red);
+    opacity: 0;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    width:100%;
+    transition: opacity .5s ease, visibility 1s ease;
+}
+
+.stats-inner{
+    line-height: 100%;
+    align-self: center;
+}
+
+.img-player{
+    margin: 0 auto;
+    display: block;
+}
+
+
+.player-game:hover{
+    border-radius: 50%;
+    width: 80%;
+    border: 10px solid var(--color-red);
+
+}
+
+.player-game:hover .circle-card-stats{
+    opacity: 1;
+}
+

@@ -92,21 +92,28 @@ $( document ).ready(function() {
             $('#container').append(polaroid);
         },
         characterCard(obj){
-            var card = $('<div>').text(obj.name).addClass('player player-game').attr('id', obj.num);
-            var hp = $('<p>').text(obj.hp).attr('id', 'hp' + obj.num);
-            card.append(hp);
+            var card = $('<div>').addClass('player player-game').attr('id', obj.num);
+            var stats = $('<div>').addClass('circle-card-stats');
+            var statsInner = $('<div>').addClass('stats-inner');
+            var img = $('<img>').addClass('img-fluid img-player').attr('src', 'assets/images/' + obj.img + '.jpg');
+            var name = $('<p>').text(obj.name);
+            var hp = $('<p>').text('HP:' + obj.hp).attr('id', 'hp' + obj.num);
+
+            card.append(img);
+            statsInner.append(name, hp);
 
             if(obj !== this.character){
                 var button = $('<button>').addClass('btn btn-attack').attr('id', 'attack' + obj.num).text('Attack');
-                card.append(button);
+                statsInner.append(button);
             } 
             
+            stats.append(statsInner);
+            card.append(stats);
+
             return card;
         },
         chooseEnemy(num){
-            // var random = Math.floor(Math.random()*this.enemies.length);
 
-            // this.currentEnemy = this.enemies[random];
             this.enemies.splice(num, 1);
             this.currentEnemy = this.players[num];
             
@@ -140,15 +147,16 @@ $( document ).ready(function() {
             //     $('#upside-down').empty();
             // }
             
-            $('#container').empty();
+            $('#container').empty().addClass('enemy-select');
+            $('body').css('background-image', 'none').css('background-color', '#222');
 
             this.enemies.forEach(function(i){
                 var char = game.characterCard(i);
-                game.appendEl(i, char);
+                $('#container').append(char);
             });
             
-            var attacker = this.characterCard(this.character);
-            this.appendEl(this.character, attacker);
+            // var attacker = this.characterCard(this.character);
+            // this.appendEl(this.character, attacker);
     
         },
     }
