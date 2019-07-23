@@ -20,7 +20,15 @@
 }
 
 body{
+    background-image: url('../images/wood2.jpg');
+    background-repeat: repeat;
+    transition: background-image 1s ease;   
+}
+
+body, button{
+
     font-family: 'ITC Avante Garde Gothic', sans-serif;
+    font-size: 18px;
 }
 
 #loader{
@@ -37,8 +45,21 @@ h1, h2, h3, h4, h5, h6{
     font-family: 'ITC Benguiat', serif;   
 }    
 
+h1, h2, h3, h4, h5, h6, p{
+    margin-bottom: .5em;
+}
+
 h1{
     font-size: 5em;
+}
+
+h2{
+    font-size: 3em;
+    line-height: 2em;
+}
+
+h4{
+    font-size: 1.35em;
 }
 
 strong{
@@ -71,6 +92,13 @@ strong{
     z-index: -1;
 }
 
+.cont{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+}
+
 .cont-fixed{
     top:0;
     left:0;
@@ -87,30 +115,44 @@ strong{
     color: var(--color-light);
     background-color: var(--color-dark);
 }
-
-#container{
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    grid-column-gap: 1em;
-    min-height: 100vh;
-    align-items: center;
-    justify-content: space-evenly;
-    justify-items: center;	
-    
-}
-
 .wrapper{
     width: 70%;
     display: block;
     margin: 0 auto;
 }
 
-body{
-    background-image: url('../images/wood2.jpg');
-    background-repeat: repeat;
-    transition: background-image 1s ease;    
+#container{
+    width: 100%;
 }
+
+.cont-polaroid{
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-column-gap: 1em;
+    min-height: calc(100vh - 2em);
+    align-items: center;
+    justify-content: space-evenly;
+    justify-items: center;	
+}
+
+.enemy-select{
+    display: flex;
+
+}
+
+#protagonist, #antagonists{
+    width: 100%;
+    /* display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-column-gap: 1em; */
+    display: flex;
+    min-height: calc(100vh - 2em);
+    align-items: center;
+    justify-content: space-evenly;
+    justify-items: center;	
+}
+
 
 
 .player{
@@ -119,17 +161,6 @@ body{
 
 .player-chosen{
     background-color: var(--color-red);
-}
-
-button{
-    background: none;
-    box-shadow: none;
-    border: none;
-    cursor: pointer;
-}
-
-button:focus{
-    outline:0;
 }
 
 .btn{
@@ -148,13 +179,23 @@ button:focus{
 
 }
 
+.btn-attack{
+    color: white;
+    border: 1px solid white;
+
+}
+
+.btn-attack:hover{
+    color: var(--color-red);
+    background-color: white;
+}
+
 .btn-close{
     position: absolute;
     top: 0;
     right: 0;
     padding: 1em;
 }
-
 
 .player-polaroid{
     margin: 1em;
@@ -279,7 +320,6 @@ button:focus{
 }
 
 .stats-inner{
-    line-height: 100%;
     align-self: center;
 }
 

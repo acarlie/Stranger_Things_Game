@@ -1,6 +1,6 @@
 $( document ).ready(function() {
     var game = {
-        gamePlay: false,
+        characterSelect: false,
         character: "",
         characterSide: "",
         enemySelect: false,
@@ -96,7 +96,7 @@ $( document ).ready(function() {
             var stats = $('<div>').addClass('circle-card-stats');
             var statsInner = $('<div>').addClass('stats-inner');
             var img = $('<img>').addClass('img-fluid img-player').attr('src', 'assets/images/' + obj.img + '.jpg');
-            var name = $('<p>').text(obj.name);
+            var name = $('<h4>').text(obj.name);
             var hp = $('<p>').text('HP:' + obj.hp).attr('id', 'hp' + obj.num);
 
             card.append(img);
@@ -130,7 +130,7 @@ $( document ).ready(function() {
         
         },
         init(index){
-            this.gamePlay = true;
+            this.characterSelect = true;
             this.character = this.players[index];
             this.characterSide = this.players[index].hawkins;
 
@@ -147,18 +147,34 @@ $( document ).ready(function() {
             //     $('#upside-down').empty();
             // }
             
-            $('#container').empty().addClass('enemy-select');
+            $('#container').empty().addClass('enemy-select').before('<span class="cont"><h2 class="text-stranger text-center">Choose an opponent...</h2></span>');
+            var protagContainer = $('<div>').attr('id', 'protagonist');
+            var antagContainer = $('<div>').attr('id', 'antagonists');
+            $('.text-stranger').each(function(){
+                $(this).attr('data-content', this.textContent);
+            });
+        
             $('body').css('background-image', 'none').css('background-color', '#222');
+
+            var protagonist = game.characterCard(this.character);
+            protagContainer.append(protagonist);
 
             this.enemies.forEach(function(i){
                 var char = game.characterCard(i);
-                $('#container').append(char);
+                antagContainer.append(char);
             });
+
+            $('#container').append(protagContainer, antagContainer);
             
             // var attacker = this.characterCard(this.character);
             // this.appendEl(this.character, attacker);
     
         },
+        arena(character, enemy){
+            // var char = ;
+            // var enem = ;
+
+        }
     }
 
     //load screen
@@ -170,6 +186,7 @@ $( document ).ready(function() {
     });
 
     //generator for player cards
+    $('#container').addClass('cont-polaroid');
     $.each(game.players, function(i){
 
         game.polaroid(i);
@@ -179,7 +196,7 @@ $( document ).ready(function() {
     //click event handler for player select cards
     function playerSelectHandler( event ){
         var target = $( event.target );
-            if ( target.is( '.btn-select' ) && !game.gamePlay ){
+            if ( target.is( '.btn-select' ) && !game.characterSelect ){
                 console.log('clicked');
 
                 var playerIndex = $(this).attr('data-index');
@@ -208,6 +225,7 @@ $( document ).ready(function() {
             game.enemySelect = true;
 
         } else if (game.enemySelect && game.enemyNum === targetNum){
+            game.arena(game.character, game.currentEnemy);
             game.duel(game.character, game.currentEnemy);
         }
  
