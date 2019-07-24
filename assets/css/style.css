@@ -351,6 +351,7 @@ strong{
 }
 
 .player-enemy{
+    color: white;
     display: flex;
     width: 100%;
     margin-bottom: 1em;
@@ -359,11 +360,11 @@ strong{
 }
 
 .img-enemy{
-    max-width: 200px;
+    max-width: 150px;
 }
 
 .stats-enemy{
-    padding: .5em;
+    padding: 1em;
     background-color: var(--color-red);
  
     display: flex;

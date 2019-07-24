@@ -30,10 +30,13 @@ $( document ).ready(function() {
             p1.hp = Math.max(0, p1.hp - Math.max(0, p2.counterAttack - p1.defense));
         },
         enemyDefeated(enemyNum){
+
+            this.defeatedEnemiesArr.push(this.currentEnemy);
             $('#' + enemyNum).addClass('defeated');
             $('#hp' + enemyNum).text('defeated');
             $('#attack' + enemyNum).remove();
             this.enemySelect = false;
+
         },
         duel(player1, player2){
       
@@ -52,6 +55,8 @@ $( document ).ready(function() {
                     console.log(player1.name + ' won');
                     //empty change defeated enemy
                     this.enemyDefeated(p2);
+
+                    this.enemyGenerator($('#antagonists'), this.enemies);
                     
                 } else if (this.isAlive(player2) && !this.isAlive(player1)){
                     console.log(player2.name + ' won');
@@ -132,10 +137,29 @@ $( document ).ready(function() {
 
             return card;
         },
-        chooseEnemy(num){
+        arrayRemove(arr, value) {
 
-            this.enemies.splice(num, 1);
+            return arr.filter(function(ele){
+                return ele != value;
+            });
+         
+        },
+        chooseEnemy(num){
+            var temp = this.players[num];
+            // console.log(temp);
+            this.enemies = this.arrayRemove(this.enemies, temp);
+            console.log(this.enemies);
+            // this.enemies.splice(num, 1);
             this.currentEnemy = this.players[num];
+            
+     
+            var char = game.enemyChoiceCard(this.currentEnemy);
+            $('#antagonists').empty().append(char);
+            
+            
+
+
+
             
 
             // if(this.currentEnemy.hawkins){
@@ -148,6 +172,13 @@ $( document ).ready(function() {
             // this.appendEl(this.currentEnemy, enemy);
 
         
+        },
+        enemyGenerator(container, enemyArr){
+            $(container).empty();
+            enemyArr.forEach(function(i){
+                var char = game.enemyChoiceCard(i);
+                container.append(char);
+            });
         },
         init(index){
             this.characterSelect = true;
@@ -179,22 +210,15 @@ $( document ).ready(function() {
             var protagonist = game.characterCard(this.character);
             protagContainer.append(protagonist);
 
-            this.enemies.forEach(function(i){
-                var char = game.enemyChoiceCard(i);
-                antagContainer.append(char);
-            });
-
+            this.enemyGenerator(antagContainer, this.enemies);
+            
             $('#container').append(protagContainer, antagContainer);
             
             // var attacker = this.characterCard(this.character);
             // this.appendEl(this.character, attacker);
     
         },
-        arena(character, enemy){
-            // var char = ;
-            // var enem = ;
 
-        }
     }
 
     //load screen
@@ -245,7 +269,6 @@ $( document ).ready(function() {
             game.enemySelect = true;
 
         } else if (game.enemySelect && game.enemyNum === targetNum){
-            game.arena(game.character, game.currentEnemy);
             game.duel(game.character, game.currentEnemy);
         }
  
