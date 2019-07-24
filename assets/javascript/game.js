@@ -18,6 +18,18 @@ $( document ).ready(function() {
             {num: 4, hawkins: false, hp: 110, attack: 35, defense: 15, counterAttack: 35, basePower: 7, name: "Demogorgon", img: "demogorgon", desc: ""},
             {num: 5, hawkins: false, hp: 100, attack: 35, defense: 10, counterAttack: 35, basePower: 5, name: "Billy", img: "billy", desc: ""}
         ],
+        finalScreen(win, player, enemy){
+            $('#final').removeClass('hidden');
+            if (win){
+                console.log('win');
+                $('#final-text').text('All Enemies Defeated');
+            } else {
+                console.log('lose');
+                $('#final-text').text('Game Over');
+                $('#final-message').text(player.name + ' was defeated by ' + enemy.name);
+            }
+
+        },
         isAlive(player){
             //returns if player is alive.
             return Boolean(player.hp > 0);
@@ -51,18 +63,18 @@ $( document ).ready(function() {
                 $('#hp'+ p1).text(player1.hp);
                 $('#hp'+ p2).text(player2.hp);
 
-                if(this.isAlive(player1) && !this.isAlive(player2)){
+                if(this.isAlive(player1) && !this.isAlive(player2) && this.enemies.length > 0){
                     console.log(player1.name + ' won');
-                    //empty change defeated enemy
                     this.enemyDefeated(p2);
-
                     this.enemyGenerator($('#antagonists'), this.enemies);
                     
                 } else if (this.isAlive(player2) && !this.isAlive(player1)){
                     console.log(player2.name + ' won');
-                    //Game over - restart
+                    this.finalScreen(false, player1, player2);
                 } else if (!this.isAlive(player1) && !this.isAlive(player2)){
-                    console.log('draw');
+                    this.finalScreen(false, player1, player2);
+                } else if (this.isAlive(player1) && !this.isAlive(player2) && this.enemies.length === 0){
+                    this.finalScreen(true, player1, player2);
                 }
 
             }    
@@ -146,31 +158,11 @@ $( document ).ready(function() {
         },
         chooseEnemy(num){
             var temp = this.players[num];
-            // console.log(temp);
             this.enemies = this.arrayRemove(this.enemies, temp);
-            console.log(this.enemies);
-            // this.enemies.splice(num, 1);
             this.currentEnemy = this.players[num];
             
-     
             var char = game.enemyChoiceCard(this.currentEnemy);
             $('#antagonists').empty().append(char);
-            
-            
-
-
-
-            
-
-            // if(this.currentEnemy.hawkins){
-            //     $('#hawkins').empty();
-            // } else {
-            //     $('#upside-down').empty();
-            // }
-
-            // var enemy = this.characterCard(this.currentEnemy);
-            // this.appendEl(this.currentEnemy, enemy);
-
         
         },
         enemyGenerator(container, enemyArr){
