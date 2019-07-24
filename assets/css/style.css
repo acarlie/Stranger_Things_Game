@@ -20,8 +20,9 @@
 }
 
 body{
-    background-image: url('../images/wood2.jpg');
-    background-repeat: repeat;
+    /* background-image: url('../images/wood2.jpg');
+    background-repeat: repeat; */
+    background: #222;
     transition: background-image 1s ease;   
 }
 
@@ -123,6 +124,7 @@ strong{
 
 #container{
     width: 100%;
+    min-height: 80vh;
 }
 
 .cont-polaroid{
@@ -138,7 +140,8 @@ strong{
 
 .enemy-select{
     display: flex;
-
+ 
+    
 }
 
 #protagonist, #antagonists{
@@ -147,12 +150,19 @@ strong{
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     grid-column-gap: 1em; */
     display: flex;
-    min-height: calc(100vh - 2em);
-    align-items: center;
+  
     justify-content: space-evenly;
     justify-items: center;	
+    flex-direction: column;
 }
 
+#protagonist{
+    align-items: center;
+}
+
+#antagonists{
+    
+}
 
 
 .player{
@@ -179,13 +189,13 @@ strong{
 
 }
 
-.btn-attack{
+.btn{
     color: white;
     border: 1px solid white;
 
 }
 
-.btn-attack:hover{
+.btn:hover{
     color: var(--color-red);
     background-color: white;
 }
@@ -264,8 +274,6 @@ strong{
     backface-visibility: hidden;
 }
 
-
-
 .img-polaroid-wrap{
     position: relative;
     border-radius: 5px;
@@ -294,16 +302,19 @@ strong{
 }
 
 .player-game{
-    box-sizing: content-box;
-    border: 3px solid var(--color-red);
+    /* box-sizing: content-box; */
+    border: .5em solid var(--color-red);
     background-color: var(--color-red);
-    color:white;
+    color: white;
     text-align: center;
     position: relative;
     border-radius: 50%;
     transition: width .25s ease, border .5s ease;
-    width: 75%;
+    width: 85%;
     overflow: hidden;
+    max-width: 300px;
+    min-width: 200px;
+
 }
 
 .circle-card-stats{
@@ -331,12 +342,35 @@ strong{
 
 .player-game:hover{
     border-radius: 50%;
-    width: 80%;
-    border: 10px solid var(--color-red);
+    border: 2em solid var(--color-red);
 
 }
 
 .player-game:hover .circle-card-stats{
     opacity: 1;
 }
+
+.player-enemy{
+    display: flex;
+    width: 100%;
+    margin-bottom: 1em;
+
+
+}
+
+.img-enemy{
+    max-width: 200px;
+}
+
+.stats-enemy{
+    padding: .5em;
+    background-color: var(--color-red);
+ 
+    display: flex;
+    flex-direction: column;
+
+    width:100%;
+
+}
+
 

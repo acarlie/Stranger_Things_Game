@@ -70,29 +70,46 @@ $( document ).ready(function() {
                 $('#upside-down').append(element);
             }
         },
-        polaroid(i){
-            var polaroid = $('<div>').addClass('player player-select player-polaroid').attr('data-index', i);
-            
-            var front = $('<div>').addClass('polaroid-front');
-            var imgWrap = $('<div>').addClass('img-polaroid-wrap');
-            var img = $('<img>').addClass('img-fluid img-polaroid').attr('src', 'assets/images/' + game.players[i].img + '.jpg');
+        enemyChoiceCard(obj){
+            var card = $('<div>').addClass('player player-enemy').attr('id', obj.num).attr('data-index', obj.num);
+            var img = $('<img>').addClass('img-fluid img-enemy').attr('src', 'assets/images/' + obj.img + '.jpg');
+            var stats = $('<div>').addClass('stats-enemy');
+           
+            var name = $('<h4>').text(obj.name);
+            var hp = $('<p>').text('HP:' + obj.hp).attr('id', 'hp' + obj.num);
 
-            var back = $('<div>').addClass('polaroid-back');
-            var stats = $('<ul>').html('<li><strong>' + game.players[i].name + '</strong></li><li>' + game.players[i].desc + '</li><li>HP: ' + game.players[i].hp + '</li>');
-            var selectButton = $('<button>').addClass('btn btn-select').text('Select');
+            card.append(img);
+            stats.append(name, hp);
 
-            polaroid.append(front);
-            polaroid.append(back);
-
-            imgWrap.append(img);
-            front.append(imgWrap);
-
-            back.append(stats, selectButton);
-
-            $('#container').append(polaroid);
+            var button = $('<button>').addClass('btn btn-attack').attr('id', 'attack' + obj.num).text('Attack');
+            stats.append(button);
+      
+            card.append(stats);
+            return card;
         },
+        // polaroid(i){
+        //     var polaroid = $('<div>').addClass('player player-select player-polaroid').attr('data-index', i);
+            
+        //     var front = $('<div>').addClass('polaroid-front');
+        //     var imgWrap = $('<div>').addClass('img-polaroid-wrap');
+        //     var img = $('<img>').addClass('img-fluid img-polaroid').attr('src', 'assets/images/' + game.players[i].img + '.jpg');
+
+        //     var back = $('<div>').addClass('polaroid-back');
+        //     var stats = $('<ul>').html('<li><strong>' + game.players[i].name + '</strong></li><li>' + game.players[i].desc + '</li><li>HP: ' + game.players[i].hp + '</li>');
+        //     var selectButton = $('<button>').addClass('btn btn-select').text('Select');
+
+        //     polaroid.append(front);
+        //     polaroid.append(back);
+
+        //     imgWrap.append(img);
+        //     front.append(imgWrap);
+
+        //     back.append(stats, selectButton);
+
+        //     $('#container').append(polaroid);
+        // },
         characterCard(obj){
-            var card = $('<div>').addClass('player player-game').attr('id', obj.num);
+            var card = $('<div>').addClass('player player-game').attr('id', obj.num).attr('data-index', obj.num);
             var stats = $('<div>').addClass('circle-card-stats');
             var statsInner = $('<div>').addClass('stats-inner');
             var img = $('<img>').addClass('img-fluid img-player').attr('src', 'assets/images/' + obj.img + '.jpg');
@@ -102,10 +119,13 @@ $( document ).ready(function() {
             card.append(img);
             statsInner.append(name, hp);
 
-            if(obj !== this.character){
+            if(obj !== this.character && this.characterSelect){
                 var button = $('<button>').addClass('btn btn-attack').attr('id', 'attack' + obj.num).text('Attack');
                 statsInner.append(button);
-            } 
+            } else if (!this.characterSelect){
+                var selectButton = $('<button>').addClass('btn btn-select').text('Select');
+                statsInner.append(selectButton);
+            }
             
             stats.append(statsInner);
             card.append(stats);
@@ -160,7 +180,7 @@ $( document ).ready(function() {
             protagContainer.append(protagonist);
 
             this.enemies.forEach(function(i){
-                var char = game.characterCard(i);
+                var char = game.enemyChoiceCard(i);
                 antagContainer.append(char);
             });
 
@@ -188,8 +208,8 @@ $( document ).ready(function() {
     //generator for player cards
     $('#container').addClass('cont-polaroid');
     $.each(game.players, function(i){
-
-        game.polaroid(i);
+        var player = game.characterCard(game.players[i]);
+        $('#container').append(player);
        
     });
 
@@ -210,7 +230,7 @@ $( document ).ready(function() {
 
 
     //player select button
-    $( '.player-select' ).on('click', playerSelectHandler );
+    $( '.player-game' ).on('click', playerSelectHandler );
 
     //attack button
     $('#container').on('click', '.btn-attack', function(event){
