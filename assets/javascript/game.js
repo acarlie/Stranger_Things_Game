@@ -1,15 +1,15 @@
 $( document ).ready(function() {
     var game = {
+        cont: $('#container'),
+        final: $('#final'),
         characterSelect: false,
+        enemySelect: false,
         character: "",
         characterSide: "",
-        enemySelect: false,
-        enemies: [],
-        defeatedEnemiesArr: [],
-        enemyCount: 0,
-        defeatedEnemies: 0,
         currentEnemy: "",
         enemyNum: "",
+        enemies: [],
+        defeatedEnemiesArr: [],
         players: [
             {num: 0, hawkins: true, hp: 80, attack: 50, defense: 25, counterAttack: 40, basePower: 10, name: "Eleven", img: "eleven", desc: ""},
             {num: 1, hawkins: true, hp: 120, attack: 25, defense: 20, counterAttack: 30, basePower: 5, name: "Jim Hopper", img: "hopper", desc: ""},
@@ -18,21 +18,55 @@ $( document ).ready(function() {
             {num: 4, hawkins: false, hp: 110, attack: 35, defense: 15, counterAttack: 35, basePower: 7, name: "Demogorgon", img: "demogorgon", desc: ""},
             {num: 5, hawkins: false, hp: 100, attack: 35, defense: 10, counterAttack: 35, basePower: 5, name: "Billy", img: "billy", desc: ""}
         ],
-        finalScreen(win, player, enemy){
-            $('#final').removeClass('hidden');
-            if (win){
-                console.log('win');
-                $('#final-text').text('All Enemies Defeated');
-            } else {
-                console.log('lose');
-                $('#final-text').text('Game Over');
-                $('#final-message').text(player.name + ' was defeated by ' + enemy.name);
-            }
-
+        init(){
+            this.strangerText();
+            this.cont.addClass('cont-player-select');
+            $.each(this.players, function(i){
+                var player = game.characterCard(game.players[i]);
+                game.cont.append(player);
+            });
         },
-        isAlive(player){
-            //returns if player is alive.
-            return Boolean(player.hp > 0);
+        reset(){
+            this.characterSelect = false;
+            this.enemySelect = false;
+            this.character = "";
+            this.characterSide = "";
+            this.currentEnemy = "";
+            this.enemyNum = "";
+            this.enemies = [];
+            this.defeatedEnemiesArr = [];
+            this.cont.empty();
+            this.final.addClass('hidden');
+        },
+        start(index){
+            this.characterSelect = true;
+            this.character = this.players[index];
+            this.characterSide = this.players[index].hawkins;
+
+            this.players.forEach(function(i){
+                if(game.characterSide !== i.hawkins){
+                    game.enemies.push(i);
+                }
+            });
+            
+            this.cont.empty().addClass('enemy-select');
+
+            var protagContainer = $('<div>').attr('id', 'protagonist');
+            var antagContainer = $('<div>').attr('id', 'antagonists');
+        
+            $('body').css('background-image', 'none').css('background-color', '#222');
+
+            var protagonist = game.characterCard(this.character);
+
+            protagContainer.append(protagonist);
+
+            this.enemyGenerator(antagContainer, this.enemies);
+            
+            this.cont.append(protagContainer, antagContainer);
+  
+        },
+        isAlive(p){
+            return Boolean(p.hp > 0);
         },
         attack(p1, p2){
             p2.hp = Math.max(0, p2.hp - Math.max(0, p1.attack - p2.defense));
@@ -44,11 +78,12 @@ $( document ).ready(function() {
         enemyDefeated(enemyNum){
 
             this.defeatedEnemiesArr.push(this.currentEnemy);
+
             $('#' + enemyNum).addClass('defeated');
             $('#hp' + enemyNum).text('defeated');
             $('#attack' + enemyNum).remove();
-            this.enemySelect = false;
 
+            this.enemySelect = false;
         },
         duel(player1, player2){
       
@@ -64,12 +99,9 @@ $( document ).ready(function() {
                 $('#hp'+ p2).text(player2.hp);
 
                 if(this.isAlive(player1) && !this.isAlive(player2) && this.enemies.length > 0){
-                    console.log(player1.name + ' won');
                     this.enemyDefeated(p2);
                     this.enemyGenerator($('#antagonists'), this.enemies);
-                    
                 } else if (this.isAlive(player2) && !this.isAlive(player1)){
-                    console.log(player2.name + ' won');
                     this.finalScreen(false, player1, player2);
                 } else if (!this.isAlive(player1) && !this.isAlive(player2)){
                     this.finalScreen(false, player1, player2);
@@ -80,61 +112,40 @@ $( document ).ready(function() {
             }    
                 
         },
-        appendEl(obj, element){
-            if(obj.hawkins){
-                $('#hawkins').append(element);
-            } else{
-                $('#upside-down').append(element);
-            }
+        card(obj, className){
+            return $('<div>').addClass('player ' + className).attr('id', obj.num).attr('data-index', obj.num);
+        },
+        img(obj, className, cont){
+            var img = $('<img>').addClass('img-fluid ' + className).attr('src', 'assets/images/' + obj.img + '.jpg');
+            cont.append(img);
+        },
+        stats(obj, cont){
+            var name = $('<h4>').text(obj.name);
+            var hp = $('<p>').text('HP: ' + obj.hp).attr('id', 'hp' + obj.num);
+            cont.append(name, hp);
         },
         enemyChoiceCard(obj){
-            var card = $('<div>').addClass('player player-enemy').attr('id', obj.num).attr('data-index', obj.num);
-            var img = $('<img>').addClass('img-fluid img-enemy').attr('src', 'assets/images/' + obj.img + '.jpg');
-            var stats = $('<div>').addClass('stats-enemy');
-           
-            var name = $('<h4>').text(obj.name);
-            var hp = $('<p>').text('HP:' + obj.hp).attr('id', 'hp' + obj.num);
+            var card = this.card(obj, 'player-enemy');
+            var img = this.img(obj, 'img-enemy', card);
 
-            card.append(img);
-            stats.append(name, hp);
+            var stats = $('<div>').addClass('stats-enemy');
+            this.stats(obj, stats);
 
             var button = $('<button>').addClass('btn btn-attack').attr('id', 'attack' + obj.num).text('Attack');
+
             stats.append(button);
-      
             card.append(stats);
+
             return card;
         },
-        // polaroid(i){
-        //     var polaroid = $('<div>').addClass('player player-select player-polaroid').attr('data-index', i);
-            
-        //     var front = $('<div>').addClass('polaroid-front');
-        //     var imgWrap = $('<div>').addClass('img-polaroid-wrap');
-        //     var img = $('<img>').addClass('img-fluid img-polaroid').attr('src', 'assets/images/' + game.players[i].img + '.jpg');
-
-        //     var back = $('<div>').addClass('polaroid-back');
-        //     var stats = $('<ul>').html('<li><strong>' + game.players[i].name + '</strong></li><li>' + game.players[i].desc + '</li><li>HP: ' + game.players[i].hp + '</li>');
-        //     var selectButton = $('<button>').addClass('btn btn-select').text('Select');
-
-        //     polaroid.append(front);
-        //     polaroid.append(back);
-
-        //     imgWrap.append(img);
-        //     front.append(imgWrap);
-
-        //     back.append(stats, selectButton);
-
-        //     $('#container').append(polaroid);
-        // },
         characterCard(obj){
-            var card = $('<div>').addClass('player player-game').attr('id', obj.num).attr('data-index', obj.num);
+            var card = this.card(obj, 'player-game');
+            var img = this.img(obj, 'img-player', card);
+
             var stats = $('<div>').addClass('circle-card-stats');
             var statsInner = $('<div>').addClass('stats-inner');
-            var img = $('<img>').addClass('img-fluid img-player').attr('src', 'assets/images/' + obj.img + '.jpg');
-            var name = $('<h4>').text(obj.name);
-            var hp = $('<p>').text('HP:' + obj.hp).attr('id', 'hp' + obj.num);
-
-            card.append(img);
-            statsInner.append(name, hp);
+            this.stats(obj, statsInner);
+            stats.append(statsInner);
 
             if(obj !== this.character && this.characterSelect){
                 var button = $('<button>').addClass('btn btn-attack').attr('id', 'attack' + obj.num).text('Attack');
@@ -144,7 +155,6 @@ $( document ).ready(function() {
                 statsInner.append(selectButton);
             }
             
-            stats.append(statsInner);
             card.append(stats);
 
             return card;
@@ -172,44 +182,22 @@ $( document ).ready(function() {
                 container.append(char);
             });
         },
-        init(index){
-            this.characterSelect = true;
-            this.character = this.players[index];
-            this.characterSide = this.players[index].hawkins;
-
-            this.players.forEach(function(i){
-                if(game.characterSide !== i.hawkins){
-                    game.enemies.push(i);
-                    game.enemyCount++;
-                }
-            });
-
-            // if (this.characterSide){
-            //     $('#hawkins').empty();
-            // } else {
-            //     $('#upside-down').empty();
-            // }
-            
-            $('#container').empty().addClass('enemy-select').before('<span class="cont"><h2 class="text-stranger text-center">Choose an opponent...</h2></span>');
-            var protagContainer = $('<div>').attr('id', 'protagonist');
-            var antagContainer = $('<div>').attr('id', 'antagonists');
+        finalScreen(win, player, enemy){
+            this.final.removeClass('hidden');
+            if (win){
+                console.log('win');
+                $('#final-text').text('All Enemies Defeated');
+            } else {
+                console.log('lose');
+                $('#final-text').text('Game Over');
+                $('#final-message').text(player.name + ' was defeated by ' + enemy.name);
+            }
+        },
+        strangerText(){
             $('.text-stranger').each(function(){
                 $(this).attr('data-content', this.textContent);
             });
-        
-            $('body').css('background-image', 'none').css('background-color', '#222');
-
-            var protagonist = game.characterCard(this.character);
-            protagContainer.append(protagonist);
-
-            this.enemyGenerator(antagContainer, this.enemies);
-            
-            $('#container').append(protagContainer, antagContainer);
-            
-            // var attacker = this.characterCard(this.character);
-            // this.appendEl(this.character, attacker);
-    
-        },
+        }
 
     }
 
@@ -217,17 +205,8 @@ $( document ).ready(function() {
     window.setTimeout(function(){ $('#loader').addClass('hidden'); }, 1000);
 
     //stranger things text
-    $('.text-stranger').each(function(){
-        $(this).attr('data-content', this.textContent);
-    });
+    game.init();
 
-    //generator for player cards
-    $('#container').addClass('cont-polaroid');
-    $.each(game.players, function(i){
-        var player = game.characterCard(game.players[i]);
-        $('#container').append(player);
-       
-    });
 
     //click event handler for player select cards
     function playerSelectHandler( event ){
@@ -237,7 +216,7 @@ $( document ).ready(function() {
 
                 var playerIndex = $(this).attr('data-index');
                 console.log(playerIndex);
-                game.init(playerIndex);
+                game.start(playerIndex);
                                 
             } 
             
