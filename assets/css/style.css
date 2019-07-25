@@ -30,6 +30,7 @@ body{
 body, button{
     font-family: 'ITC Avante Garde Gothic', sans-serif;
     font-size: 18px;
+    line-height: 1.25em;
 }
 
 h1, h2, h3, h4, h5, h6{
@@ -40,14 +41,24 @@ h1, h2, h3, h4, h5, h6, p{
     margin-bottom: .5em;
 }
 
+p{
+    margin-bottom: 1em;
+}
+
 h1{
     font-size: 5em;
-    line-height: .5em;
 }
 
 h2{
     font-size: 3em;
-    line-height: 2em;
+}
+
+h3{
+    font-size: 2em;
+}
+
+#message{
+    font-family: 'ITC Avante Garde Gothic', sans-serif;
 }
 
 h4{
@@ -91,8 +102,11 @@ strong{
 #loader, #final{
     transition: all 2s ease;
     z-index: 100;
-    background-color: var(--color-dark);
 
+}
+
+#loader{
+    background-color: var(--color-dark);
 }
 
 #loader.hidden, #final.hidden{
@@ -103,6 +117,7 @@ strong{
 #final{
     justify-content: center;
     color: white;
+    background-color: var(--color-red);
 }
 
 .cont-fixed{

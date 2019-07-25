@@ -1,10 +1,12 @@
 $( document ).ready(function() {
     var game = {
         cont: $('#container'),
+        message: $('#message'),
         final: $('#final'),
         init(){
             this.strangerText();
             this.cont.addClass('cont-player-select');
+            this.message.text('Select a player...');
             this.characterSelect = false;
             this.enemySelect = false;
             this.character = "";
@@ -44,6 +46,8 @@ $( document ).ready(function() {
             });
             
             this.cont.empty().addClass('enemy-select');
+            this.message.text('Select an opponent...');
+
 
             $('body').css('background-image', 'none').css('background-color', '#222');
 
@@ -68,7 +72,7 @@ $( document ).ready(function() {
             p1.hp = Math.max(0, p1.hp - Math.max(0, p2.counterAttack - p1.defense));
         },
         enemyDefeated(){
-
+            this.message.text('Select an opponent...');
             this.defeatedEnemiesArr.push(this.currentEnemy);
             this.enemySelect = false;
         },
@@ -173,6 +177,8 @@ $( document ).ready(function() {
          
         },
         chooseEnemy(num){
+            this.message.text('Attack!');
+
             var remove = this.players[num];
             this.enemies = this.arrayRemove(this.enemies, remove);
             this.currentEnemy = this.players[num];
