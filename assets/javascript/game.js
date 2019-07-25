@@ -10,24 +10,28 @@ $( document ).ready(function() {
         enemyNum: "",
         enemies: [],
         defeatedEnemiesArr: [],
-        players: [
-            {num: 0, hawkins: true, hp: 80, attack: 50, defense: 25, counterAttack: 40, basePower: 10, name: "Eleven", img: "eleven", desc: ""},
-            {num: 1, hawkins: true, hp: 120, attack: 25, defense: 20, counterAttack: 30, basePower: 5, name: "Jim Hopper", img: "hopper", desc: ""},
-            {num: 2, hawkins: true, hp: 120, attack: 30, defense: 15, counterAttack: 30, basePower: 6, name: "Jancy", img: "jancy", desc: "A.K.A. Jonathan Byers and Nancy Wheeler"},
-            {num: 3, hawkins: false, hp: 150, attack: 40, defense: 15, counterAttack: 40, basePower: 9, name: "The Mind Flayer", img: "mindflayer", desc: ""},
-            {num: 4, hawkins: false, hp: 110, attack: 35, defense: 15, counterAttack: 35, basePower: 7, name: "Demogorgon", img: "demogorgon", desc: ""},
-            {num: 5, hawkins: false, hp: 100, attack: 35, defense: 10, counterAttack: 35, basePower: 5, name: "Billy", img: "billy", desc: ""}
-        ],
+        players: [],
         init(){
             this.strangerText();
             this.cont.removeClass('enemy-select');
             this.cont.addClass('cont-player-select');
+            this.players = [
+                {num: 0, hawkins: true, hp: 80, attack: 50, defense: 25, counterAttack: 40, basePower: 10, name: "Eleven", img: "eleven", desc: ""},
+                {num: 1, hawkins: true, hp: 120, attack: 25, defense: 20, counterAttack: 30, basePower: 5, name: "Jim Hopper", img: "hopper", desc: ""},
+                {num: 2, hawkins: true, hp: 120, attack: 30, defense: 15, counterAttack: 30, basePower: 6, name: "Jancy", img: "jancy", desc: "A.K.A. Jonathan Byers and Nancy Wheeler"},
+                {num: 3, hawkins: false, hp: 150, attack: 40, defense: 15, counterAttack: 40, basePower: 9, name: "The Mind Flayer", img: "mindflayer", desc: ""},
+                {num: 4, hawkins: false, hp: 110, attack: 35, defense: 15, counterAttack: 35, basePower: 7, name: "Demogorgon", img: "demogorgon", desc: ""},
+                {num: 5, hawkins: false, hp: 100, attack: 35, defense: 10, counterAttack: 35, basePower: 5, name: "Billy", img: "billy", desc: ""}
+            ];
+            console.log(this.players);
+
             $.each(this.players, function(i){
                 var player = game.characterCard(game.players[i]);
                 game.cont.append(player);
             });
         },
         reset(){
+            
             this.characterSelect = false;
             this.enemySelect = false;
             this.character = "";
@@ -38,6 +42,7 @@ $( document ).ready(function() {
             this.defeatedEnemiesArr = [];
             this.cont.empty();
             this.final.addClass('hidden');
+
         },
         start(index){
             this.characterSelect = true;
@@ -150,7 +155,7 @@ $( document ).ready(function() {
                 var button = $('<button>').addClass('btn btn-attack').attr('id', 'attack' + obj.num).text('Attack');
                 statsInner.append(button);
             } else if (!this.characterSelect){
-                var selectButton = $('<button>').addClass('btn btn-select').text('Select');
+                var selectButton = $('<button>').addClass('btn btn-select').text('Select').attr('data-id', obj.num);
                 statsInner.append(selectButton);
             }
 
@@ -183,6 +188,7 @@ $( document ).ready(function() {
             });
         },
         finalScreen(win, player, enemy){
+            console.log(this.players);
             this.final.removeClass('hidden');
             if (win){
                 console.log('win');
@@ -223,7 +229,8 @@ $( document ).ready(function() {
             }
      
         },
-        resetHandler(event){
+        resetHandler( event ){
+            console.log(event.target);
             game.reset();
             game.init();
         }
@@ -232,6 +239,9 @@ $( document ).ready(function() {
 
     //load screen
     window.setTimeout(function(){ $('#loader').addClass('hidden'); }, 1000);
+
+    // game.players = game.players.slice();
+    // console.log(game.players);
 
     //stranger things text
     game.init();
@@ -242,6 +252,24 @@ $( document ).ready(function() {
 
     //attack button
     $('#container').on('click', '.btn-attack', game.attackHandler);
+
+    $('#container').on('click', '.btn-select', function(event){
+        var target = event.target;
+        // var targetId = $(target).attr('id');
+
+        if ( !game.characterSelect ){
+    
+            var playerIndex = target.getAttribute('data-id');
+            console.log('-------');
+            console.log(target);
+            console.log('-------');
+
+            console.log(playerIndex + 'Player index');
+            game.start(playerIndex);
+                            
+        } 
+    });
+
 
     //reset button
     $('#final').on('click', '#reset', game.resetHandler);
