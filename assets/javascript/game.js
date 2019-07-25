@@ -2,36 +2,9 @@ $( document ).ready(function() {
     var game = {
         cont: $('#container'),
         final: $('#final'),
-        characterSelect: false,
-        enemySelect: false,
-        character: "",
-        characterSide: "",
-        currentEnemy: "",
-        enemyNum: "",
-        enemies: [],
-        defeatedEnemiesArr: [],
-        players: [],
         init(){
             this.strangerText();
-            this.cont.removeClass('enemy-select');
             this.cont.addClass('cont-player-select');
-            this.players = [
-                {num: 0, hawkins: true, hp: 80, attack: 50, defense: 25, counterAttack: 40, basePower: 10, name: "Eleven", img: "eleven", desc: ""},
-                {num: 1, hawkins: true, hp: 120, attack: 25, defense: 20, counterAttack: 30, basePower: 5, name: "Jim Hopper", img: "hopper", desc: ""},
-                {num: 2, hawkins: true, hp: 120, attack: 30, defense: 15, counterAttack: 30, basePower: 6, name: "Jancy", img: "jancy", desc: "A.K.A. Jonathan Byers and Nancy Wheeler"},
-                {num: 3, hawkins: false, hp: 150, attack: 40, defense: 15, counterAttack: 40, basePower: 9, name: "The Mind Flayer", img: "mindflayer", desc: ""},
-                {num: 4, hawkins: false, hp: 110, attack: 35, defense: 15, counterAttack: 35, basePower: 7, name: "Demogorgon", img: "demogorgon", desc: ""},
-                {num: 5, hawkins: false, hp: 100, attack: 35, defense: 10, counterAttack: 35, basePower: 5, name: "Billy", img: "billy", desc: ""}
-            ];
-            console.log(this.players);
-
-            $.each(this.players, function(i){
-                var player = game.characterCard(game.players[i]);
-                game.cont.append(player);
-            });
-        },
-        reset(){
-            
             this.characterSelect = false;
             this.enemySelect = false;
             this.character = "";
@@ -40,9 +13,24 @@ $( document ).ready(function() {
             this.enemyNum = "";
             this.enemies = [];
             this.defeatedEnemiesArr = [];
+            this.players = [
+                {num: 0, hawkins: true, hp: 80, attack: 50, defense: 25, counterAttack: 40, basePower: 10, name: "Eleven", img: "eleven", desc: ""},
+                {num: 1, hawkins: true, hp: 120, attack: 25, defense: 20, counterAttack: 30, basePower: 5, name: "Jim Hopper", img: "hopper", desc: ""},
+                {num: 2, hawkins: true, hp: 120, attack: 30, defense: 15, counterAttack: 30, basePower: 6, name: "Jancy", img: "jancy", desc: "A.K.A. Jonathan Byers and Nancy Wheeler"},
+                {num: 3, hawkins: false, hp: 150, attack: 40, defense: 15, counterAttack: 40, basePower: 9, name: "The Mind Flayer", img: "mindflayer", desc: ""},
+                {num: 4, hawkins: false, hp: 110, attack: 35, defense: 15, counterAttack: 35, basePower: 7, name: "Demogorgon", img: "demogorgon", desc: ""},
+                {num: 5, hawkins: false, hp: 100, attack: 35, defense: 10, counterAttack: 35, basePower: 5, name: "Billy", img: "billy", desc: ""}
+            ];
+
+            $.each(this.players, function(i){
+                var player = game.characterCard(game.players[i]);
+                game.cont.append(player);
+            });
+        },
+        reset(){
+            this.cont.removeClass('enemy-select');
             this.cont.empty();
             this.final.addClass('hidden');
-
         },
         start(index){
             this.characterSelect = true;
@@ -60,7 +48,7 @@ $( document ).ready(function() {
             $('body').css('background-image', 'none').css('background-color', '#222');
 
             var protagContainer = $('<div>').attr('id', 'protagonist');
-            var protagonist = game.characterCard(this.character);
+            var protagonist = game.playerCard(this.character);
             protagContainer.append(protagonist);
 
 
@@ -79,14 +67,9 @@ $( document ).ready(function() {
         counterAttack(p1, p2){
             p1.hp = Math.max(0, p1.hp - Math.max(0, p2.counterAttack - p1.defense));
         },
-        enemyDefeated(enemyNum){
+        enemyDefeated(){
 
             this.defeatedEnemiesArr.push(this.currentEnemy);
-
-            $('#' + enemyNum).addClass('defeated');
-            $('#hp' + enemyNum).text('defeated');
-            $('#attack' + enemyNum).remove();
-
             this.enemySelect = false;
         },
         duel(player1, player2){
@@ -99,11 +82,11 @@ $( document ).ready(function() {
                 var p1 = player1.num;
                 var p2 = player2.num;
 
-                $('#hp'+ p1).text(player1.hp);
-                $('#hp'+ p2).text(player2.hp);
+                $('#hp'+ p1).text('HP: ' + player1.hp);
+                $('#hp'+ p2).text('HP: ' + player2.hp);
 
                 if(this.isAlive(player1) && !this.isAlive(player2) && this.enemies.length > 0){
-                    this.enemyDefeated(p2);
+                    this.enemyDefeated();
                     this.enemyGenerator($('#antagonists'), this.enemies);
                 } else if (this.isAlive(player2) && !this.isAlive(player1)){
                     this.finalScreen(false, player1, player2);
@@ -130,9 +113,9 @@ $( document ).ready(function() {
         },
         enemyChoiceCard(obj){
             var card = this.card(obj, 'player-enemy');
-            var img = this.img(obj, 'img-enemy', card);
+            this.img(obj, 'img-enemy', card);
 
-            var stats = $('<div>').addClass('stats-enemy');
+            var stats = $('<div>').addClass('player-enemy-stats');
             this.stats(obj, stats);
 
             var button = $('<button>').addClass('btn btn-attack').attr('id', 'attack' + obj.num).text('Attack');
@@ -144,9 +127,9 @@ $( document ).ready(function() {
         },
         characterCard(obj){
             var card = this.card(obj, 'player-game');
-            var img = this.img(obj, 'img-player', card);
+            this.img(obj, 'img-player', card);
 
-            var stats = $('<div>').addClass('circle-card-stats');
+            var stats = $('<div>').addClass('player-game-stats');
             var statsInner = $('<div>').addClass('stats-inner');
             this.stats(obj, statsInner);
             stats.append(statsInner);
@@ -163,6 +146,25 @@ $( document ).ready(function() {
 
             return card;
         },
+        playerCard(obj){
+            var card = this.card(obj, 'player-vs');
+            this.img(obj, 'img-vs', card);
+
+            var stats = $('<div>').addClass('player-vs-stats');
+            this.stats(obj, stats);
+
+            if(obj !== this.character){
+                var button = $('<button>').addClass('btn btn-attack').attr('id', 'attack' + obj.num).text('Attack');
+                stats.append(button);
+            }
+
+            card.append(stats);
+
+            return card;
+
+            // var healthBar = $()
+
+        },
         arrayRemove(arr, value) {
 
             return arr.filter(function(ele){
@@ -175,7 +177,7 @@ $( document ).ready(function() {
             this.enemies = this.arrayRemove(this.enemies, remove);
             this.currentEnemy = this.players[num];
             
-            var char = game.enemyChoiceCard(this.currentEnemy);
+            var char = game.playerCard(this.currentEnemy);
             $('#antagonists').empty().append(char);
             this.enemySelect = true;
 
@@ -188,13 +190,10 @@ $( document ).ready(function() {
             });
         },
         finalScreen(win, player, enemy){
-            console.log(this.players);
             this.final.removeClass('hidden');
             if (win){
-                console.log('win');
                 $('#final-text').text('All Enemies Defeated');
             } else {
-                console.log('lose');
                 $('#final-text').text('Game Over');
                 $('#final-message').text(player.name + ' was defeated by ' + enemy.name);
             }
@@ -204,15 +203,13 @@ $( document ).ready(function() {
                 $(this).attr('data-content', this.textContent);
             });
         },
-        playerSelectHandler( event ){
-            var target = $( event.target );
-                if ( target.is( '.btn-select' ) && !game.characterSelect ){
-    
-                    var playerIndex = $(this).attr('data-index');
-                    game.start(playerIndex);
-                                    
-                } 
-                
+        playerSelectHandler(event){
+            var target = event.target;
+
+            if ( !game.characterSelect ){
+                var playerIndex = target.getAttribute('data-id');
+                game.start(playerIndex);               
+            } 
         },
         attackHandler(event){
             var target = event.target;
@@ -229,8 +226,7 @@ $( document ).ready(function() {
             }
      
         },
-        resetHandler( event ){
-            console.log(event.target);
+        resetHandler(){
             game.reset();
             game.init();
         }
@@ -240,36 +236,14 @@ $( document ).ready(function() {
     //load screen
     window.setTimeout(function(){ $('#loader').addClass('hidden'); }, 1000);
 
-    // game.players = game.players.slice();
-    // console.log(game.players);
-
-    //stranger things text
+    //game start
     game.init();
 
-    //player select button
-    $( '.player-game' ).on('click', game.playerSelectHandler );
-    // $('#container').on('click', '.btn-select', game.playerSelectHandler)
+    //select button
+    $('#container').on('click', '.btn-select', game.playerSelectHandler);
 
     //attack button
     $('#container').on('click', '.btn-attack', game.attackHandler);
-
-    $('#container').on('click', '.btn-select', function(event){
-        var target = event.target;
-        // var targetId = $(target).attr('id');
-
-        if ( !game.characterSelect ){
-    
-            var playerIndex = target.getAttribute('data-id');
-            console.log('-------');
-            console.log(target);
-            console.log('-------');
-
-            console.log(playerIndex + 'Player index');
-            game.start(playerIndex);
-                            
-        } 
-    });
-
 
     //reset button
     $('#final').on('click', '#reset', game.resetHandler);
