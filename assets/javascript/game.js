@@ -20,6 +20,7 @@ $( document ).ready(function() {
         ],
         init(){
             this.strangerText();
+            this.cont.removeClass('enemy-select');
             this.cont.addClass('cont-player-select');
             $.each(this.players, function(i){
                 var player = game.characterCard(game.players[i]);
@@ -51,17 +52,15 @@ $( document ).ready(function() {
             
             this.cont.empty().addClass('enemy-select');
 
-            var protagContainer = $('<div>').attr('id', 'protagonist');
-            var antagContainer = $('<div>').attr('id', 'antagonists');
-        
             $('body').css('background-image', 'none').css('background-color', '#222');
 
+            var protagContainer = $('<div>').attr('id', 'protagonist');
             var protagonist = game.characterCard(this.character);
-
             protagContainer.append(protagonist);
 
+
+            var antagContainer = $('<div>').attr('id', 'antagonists');
             this.enemyGenerator(antagContainer, this.enemies);
-            
             this.cont.append(protagContainer, antagContainer);
   
         },
@@ -154,7 +153,7 @@ $( document ).ready(function() {
                 var selectButton = $('<button>').addClass('btn btn-select').text('Select');
                 statsInner.append(selectButton);
             }
-            
+
             card.append(stats);
 
             return card;
@@ -167,13 +166,14 @@ $( document ).ready(function() {
          
         },
         chooseEnemy(num){
-            var temp = this.players[num];
-            this.enemies = this.arrayRemove(this.enemies, temp);
+            var remove = this.players[num];
+            this.enemies = this.arrayRemove(this.enemies, remove);
             this.currentEnemy = this.players[num];
             
             var char = game.enemyChoiceCard(this.currentEnemy);
             $('#antagonists').empty().append(char);
-        
+            this.enemySelect = true;
+
         },
         enemyGenerator(container, enemyArr){
             $(container).empty();
@@ -197,6 +197,35 @@ $( document ).ready(function() {
             $('.text-stranger').each(function(){
                 $(this).attr('data-content', this.textContent);
             });
+        },
+        playerSelectHandler( event ){
+            var target = $( event.target );
+                if ( target.is( '.btn-select' ) && !game.characterSelect ){
+    
+                    var playerIndex = $(this).attr('data-index');
+                    game.start(playerIndex);
+                                    
+                } 
+                
+        },
+        attackHandler(event){
+            var target = event.target;
+            var targetId = $(target).attr('id');
+            var targetNum = targetId[targetId.length - 1];
+    
+            if (!game.enemySelect){
+    
+                game.enemyNum = targetId[targetId.length - 1];
+                game.chooseEnemy(game.enemyNum);
+    
+            } else if (game.enemySelect && game.enemyNum === targetNum){
+                game.duel(game.character, game.currentEnemy);
+            }
+     
+        },
+        resetHandler(event){
+            game.reset();
+            game.init();
         }
 
     }
@@ -207,42 +236,15 @@ $( document ).ready(function() {
     //stranger things text
     game.init();
 
-
-    //click event handler for player select cards
-    function playerSelectHandler( event ){
-        var target = $( event.target );
-            if ( target.is( '.btn-select' ) && !game.characterSelect ){
-                console.log('clicked');
-
-                var playerIndex = $(this).attr('data-index');
-                console.log(playerIndex);
-                game.start(playerIndex);
-                                
-            } 
-            
-          console.log(event.target);
-    }
-
-
     //player select button
-    $( '.player-game' ).on('click', playerSelectHandler );
+    $( '.player-game' ).on('click', game.playerSelectHandler );
+    // $('#container').on('click', '.btn-select', game.playerSelectHandler)
 
     //attack button
-    $('#container').on('click', '.btn-attack', function(event){
-        var target = event.target;
-        var targetId = $(target).attr('id');
-        var targetNum = targetId[targetId.length - 1];
+    $('#container').on('click', '.btn-attack', game.attackHandler);
 
-        if (!game.enemySelect){
+    //reset button
+    $('#final').on('click', '#reset', game.resetHandler);
 
-            game.enemyNum = targetId[targetId.length - 1];
-            game.chooseEnemy(game.enemyNum);
-            game.enemySelect = true;
-
-        } else if (game.enemySelect && game.enemyNum === targetNum){
-            game.duel(game.character, game.currentEnemy);
-        }
- 
-    });
  
 });
