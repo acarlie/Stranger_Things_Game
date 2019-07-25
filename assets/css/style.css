@@ -22,7 +22,7 @@
 body{
     background: var(--color-dark);
     color: var(--color-light);
-    padding-top: 2em;
+    padding: 2em 0;
 }
 
 

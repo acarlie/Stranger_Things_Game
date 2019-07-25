@@ -16,12 +16,12 @@ $( document ).ready(function() {
             this.enemies = [];
             this.defeatedEnemiesArr = [];
             this.players = [
-                {num: 0, hawkins: true, hp: 80, attack: 50, defense: 25, counterAttack: 40, basePower: 10, name: "Eleven", img: "eleven", desc: ""},
-                {num: 1, hawkins: true, hp: 120, attack: 25, defense: 20, counterAttack: 30, basePower: 5, name: "Jim Hopper", img: "hopper", desc: ""},
-                {num: 2, hawkins: true, hp: 120, attack: 30, defense: 15, counterAttack: 30, basePower: 6, name: "Jancy", img: "jancy", desc: "A.K.A. Jonathan Byers and Nancy Wheeler"},
-                {num: 3, hawkins: false, hp: 150, attack: 40, defense: 15, counterAttack: 40, basePower: 9, name: "The Mind Flayer", img: "mindflayer", desc: ""},
-                {num: 4, hawkins: false, hp: 110, attack: 35, defense: 15, counterAttack: 35, basePower: 7, name: "Demogorgon", img: "demogorgon", desc: ""},
-                {num: 5, hawkins: false, hp: 100, attack: 35, defense: 10, counterAttack: 35, basePower: 5, name: "Billy", img: "billy", desc: ""}
+                {num: 0, hawkins: true, hp: 80, attack: 50, defense: 25, counterAttack: 45, basePower: 10, name: "Eleven", img: "eleven", desc: ""},
+                {num: 1, hawkins: true, hp: 135, attack: 45, defense: 21, counterAttack: 31, basePower: 7, name: "Jim Hopper", img: "hopper", desc: ""},
+                {num: 2, hawkins: true, hp: 160, attack: 35, defense: 17, counterAttack: 25, basePower: 12, name: "Jancy", img: "jancy", desc: "A.K.A. Jonathan Byers and Nancy Wheeler"},
+                {num: 3, hawkins: false, hp: 170, attack: 40, defense: 18, counterAttack: 40, basePower: 9, name: "The Mind Flayer", img: "mindflayer", desc: ""},
+                {num: 4, hawkins: false, hp: 120, attack: 60, defense: 15, counterAttack: 34, basePower: 15, name: "Demogorgon", img: "demogorgon", desc: ""},
+                {num: 5, hawkins: false, hp: 100, attack: 70, defense: 16, counterAttack: 31, basePower: 19, name: "Billy", img: "billy", desc: ""}
             ];
 
             $.each(this.players, function(i){
@@ -93,11 +93,11 @@ $( document ).ready(function() {
                     this.enemyDefeated();
                     this.enemyGenerator($('#antagonists'), this.enemies);
                 } else if (this.isAlive(player2) && !this.isAlive(player1)){
-                    this.finalScreen(false, player1, player2);
+                    this.finalScreen(false, this.character, this.currentEnemy);
                 } else if (!this.isAlive(player1) && !this.isAlive(player2)){
-                    this.finalScreen(false, player1, player2);
+                    this.finalScreen(false, this.character, this.currentEnemy);
                 } else if (this.isAlive(player1) && !this.isAlive(player2) && this.enemies.length === 0){
-                    this.finalScreen(true, player1, player2);
+                    this.finalScreen(true, this.character, this.currentEnemy);
                 }
 
             }    
@@ -199,6 +199,7 @@ $( document ).ready(function() {
             this.final.removeClass('hidden');
             if (win){
                 $('#final-text').text('All Enemies Defeated');
+                $('#final-message').empty();
             } else {
                 $('#final-text').text('Game Over');
                 $('#final-message').text(player.name + ' was defeated by ' + enemy.name);
