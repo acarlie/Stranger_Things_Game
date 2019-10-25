@@ -1,0 +1,23 @@
+{
+  "name": "Stranger_Things_Game",
+  "version": "1.0.0",
+  "description": "A Stranger Game is a basic player vs. algorithm game created by Amelia Carlie.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/acarlie/Stranger_Things_Game.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/acarlie/Stranger_Things_Game/issues"
+  },
+  "homepage": "https://github.com/acarlie/Stranger_Things_Game#readme",
+  "devDependencies": {
+    "eslint": "^6.5.1"
+  }
+}
